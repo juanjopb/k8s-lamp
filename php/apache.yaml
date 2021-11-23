@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+  labels:
+    app: apache-ws
+spec:
+  selector:
+    matchLabels:
+      app: apache-ws
+  template:
+    metadata:
+      labels:
+        app: apache-ws
+    spec:
+      containers:
+      - name: apache-ws
+        image: httpd:latest
+      # LIFECYCLE DEFINITION START 
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "echo $HOSTNAME > htdocs/hostname.html"]
+      # LIFECYCLE DEFINITION END
+        ports:
+          - containerPort: 80
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: 'my-pvc'
+            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-service
+spec:
+  type: NodePort
+  selector:
+    app: apache-ws
+  ports:
+    - port: 80
+      targetPort: 80
+      nodePort: 30004
