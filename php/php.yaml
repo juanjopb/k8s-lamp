@@ -1,10 +1,13 @@
-Version: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-php7-server
   labels:
     app: my-php7-server
 spec:
+  selector:
+    matchLabels:
+      app: my-php7-server
   template:
     metadata:
       labels:

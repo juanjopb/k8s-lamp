@@ -1,11 +1,14 @@
 
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mysql-server
   labels:
     app: mysql-server
 spec:
+  selector:
+    matchLabels:
+      app: mysql-server
   template:
     metadata:
       labels:
@@ -31,7 +34,7 @@ metadata:
   name: mysql-service
 spec:
   selector:
-  app: mysql-server
+    app: mysql-server
   ports:
     - name: mysql
       protocol: TCP
